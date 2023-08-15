@@ -4,3 +4,7 @@ part of '../delete_bloc.dart';
 abstract class DeleteState {}
 
 class DeleteInitial extends DeleteState {}
+
+class DeleteSuccess extends DeleteState {}
+
+class DeleteFailure extends DeleteState {}

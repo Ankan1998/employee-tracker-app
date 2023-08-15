@@ -1,4 +1,4 @@
-part of 'add_edit_bloc.dart';
+part of '../add_edit_bloc.dart';
 
 @immutable
 abstract class AddEditState {}

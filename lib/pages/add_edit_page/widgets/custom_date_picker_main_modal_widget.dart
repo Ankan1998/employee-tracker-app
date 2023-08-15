@@ -39,7 +39,10 @@ class CustomDatePickerMainModalWidget extends StatelessWidget {
             // 9987 Issue
             Expanded(
               child: selectedDate == DateTime(1980)
-                  ? Text("No Date")
+                  ? Text(
+                      "No Date",
+                      style: TextStyle(color: AppColors.xGreyTextShade),
+                    )
                   : DateTime.now().add(Duration(hours: 3)).isAfter(selectedDate)
                       ? Text("Today")
                       : Text(HelperUtil.formatDate_dMMMy(selectedDate)),

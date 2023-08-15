@@ -1,14 +1,15 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_assignment_app/model/argument_model/add_edit_argument_model.dart';
 import 'package:flutter_assignment_app/pages/add_edit_page/add_edit_page.dart';
+import 'package:flutter_assignment_app/pages/home_page/bloc/delete_bloc.dart';
 import 'package:flutter_assignment_app/pages/home_page/bloc/home_bloc.dart';
 import 'package:flutter_assignment_app/pages/home_page/widgets/employee_list_tile.dart';
 import 'package:flutter_assignment_app/utils/app_colors.dart';
 import 'package:flutter_assignment_app/utils/helpers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:group_list_view/group_list_view.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../model/viewModel/EmployeeModel.dart';
 
 class HomePage extends StatefulWidget {
@@ -63,83 +64,127 @@ class _HomePageState extends State<HomePage> {
               ),
             );
           } else if (state is HomeSuccess) {
-            return ListView(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.8,
-                  child: GroupListView(
-                    sectionsCount: 2,
-                    countOfItemInSection: (int section) {
-                      return state.empModelList
-                          .where((e) => e.isPreviousEmp == section)
-                          .length;
-                    },
-                    itemBuilder: (BuildContext context, IndexPath index) {
-                      EmployeeModel employee = state.empModelList
-                          .where((e) => e.isPreviousEmp == index.section)
-                          .toList()[index.index];
-                      return Slidable(
-                        endActionPane: ActionPane(
-                          motion: ScrollMotion(),
-                          children: [
-                            SlidableAction(
-                              onPressed: (context) => {print("deletd")},
-                              backgroundColor: Color(0xFFFE4A49),
-                              foregroundColor: Colors.white,
-                              icon: Icons.delete,
-                              label: 'Delete',
+            return BlocListener<DeleteBloc, DeleteState>(
+              listener: (context, state) {
+                const snackBar = SnackBar(
+                  content: Text('Employee data has been Deleted!'),
+                  duration: Duration(seconds: 2),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              },
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: GroupListView(
+                      sectionsCount: 2,
+                      countOfItemInSection: (int section) {
+                        return state.empModelList
+                            .where((e) => e.isPreviousEmp == section)
+                            .length;
+                      },
+                      itemBuilder: (BuildContext context, IndexPath index) {
+                        EmployeeModel employee = state.empModelList
+                            .where((e) => e.isPreviousEmp == index.section)
+                            .toList()[index.index];
+                        return GestureDetector(
+                          child: Dismissible(
+                            key: UniqueKey(),
+                            direction: DismissDirection.endToStart,
+                            onDismissed: (direction) {
+                              context
+                                  .read<DeleteBloc>()
+                                  .add(DeleteRecordEvent(employee.empId));
+                            },
+                            background: Container(
+                              alignment: Alignment.centerRight,
+                              color: Colors.red,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 24),
+                              child: const Icon(
+                                Icons.delete_forever_outlined,
+                                color: Colors.white,
+                                size: 24,
+                              ),
                             ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            CustomListTile(
-                              Title: employee.empName,
-                              Position: employee.empDesignation,
-                              startDate: HelperUtil.formatDate_dMMMy(
-                                  employee.startDate),
-                              endDate:
-                                  HelperUtil.formatDate_dMMMy(employee.endDate),
-                              isPrev: employee.isPreviousEmp,
+                            child: Column(
+                              children: [
+                                CustomListTile(
+                                  Title: employee.empName,
+                                  Position: employee.empDesignation,
+                                  startDate: HelperUtil.formatDate_dMMMy(
+                                      employee.startDate),
+                                  endDate: HelperUtil.formatDate_dMMMy(
+                                      employee.endDate),
+                                  isPrev: employee.isPreviousEmp,
+                                ),
+                                const Divider(height: 1)
+                              ],
                             ),
-                            const Divider(height: 1)
-                          ],
-                        ),
-                      );
-                    },
-                    groupHeaderBuilder: (BuildContext context, int section) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 18),
-                        child: Text(
-                          section == 0
-                              ? 'Current employees'
-                              : 'Previous employees',
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.xBlue),
-                        ),
-                      );
-                    },
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddEditPage(
+                                  addEditArgumentModel: AddEditArgumentModel(
+                                      empId: employee.empId,
+                                      employeeName: employee.empName,
+                                      employeeDesignation:
+                                          employee.empDesignation,
+                                      employeeStartDate: employee.startDate,
+                                      employeeEndDate: employee.endDate),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      groupHeaderBuilder: (BuildContext context, int section) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 18),
+                          child: Text(
+                            section == 0
+                                ? 'Current employees'
+                                : 'Previous employees',
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.xBlue),
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
-                Container(
-                  color:
-                      AppColors.xGreyBackground, // Adjust the color as needed
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  child: const Text(
-                    "Swipe left to delete",
-                    style: TextStyle(color: AppColors.xGreyTextShade),
-                  ), // Replace with your sticky widget
-                ),
-              ],
+                  Container(
+                    color:
+                        AppColors.xGreyBackground, // Adjust the color as needed
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    child: const Text(
+                      "Swipe left to delete",
+                      style: TextStyle(color: AppColors.xGreyTextShade),
+                    ), // Replace with your sticky widget
+                  ),
+                ],
+              ),
             );
           }
-          return const Center(
+          return Center(
             child: Column(
-              children: [Text("Nothing to Show")],
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                ),
+                SvgPicture.asset(
+                  'assets/no_record.svg',
+                ),
+                const Text(
+                  "No employee records found",
+                  style: TextStyle(fontSize: 18),
+                ),
+              ],
             ),
           );
         },
@@ -149,11 +194,7 @@ class _HomePageState extends State<HomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddEditPage(
-                  addEditArgumentModel: AddEditArgumentModel(
-                      employeeName: 'Jets',
-                      employeeDesignation: 's',
-                      employeeStartDate: DateTime.now())),
+              builder: (context) => const AddEditPage(),
             ),
           );
         },

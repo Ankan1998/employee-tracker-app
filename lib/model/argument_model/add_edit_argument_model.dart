@@ -1,12 +1,14 @@
 class AddEditArgumentModel {
+  int empId;
   String employeeName;
   String employeeDesignation;
   DateTime employeeStartDate;
-  DateTime? employeeEndDate;
+  DateTime employeeEndDate;
 
   AddEditArgumentModel(
-      {required this.employeeName,
+      {required this.empId,
+      required this.employeeName,
       required this.employeeDesignation,
       required this.employeeStartDate,
-      this.employeeEndDate});
+      required this.employeeEndDate});
 }
