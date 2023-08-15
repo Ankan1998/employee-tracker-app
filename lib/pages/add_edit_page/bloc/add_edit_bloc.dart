@@ -17,7 +17,7 @@ class AddEditBloc extends Bloc<AddEditEvent, AddEditState> {
   }
 
   Future<int?> _insertEmployee(EmployeeAddEditModel emp) async {
-    int isPrevEmployee = DateTime.now().isAfter(emp.endDate) ? 1 : 0;
+    int isPrevEmployee = HelperUtil.isPrevEmployee(emp.endDate);
     String startDateTime = HelperUtil.formatDateToCustomString(emp.startDate);
     String endDateTime = HelperUtil.formatDateToCustomString(emp.endDate);
 
@@ -61,8 +61,7 @@ class AddEditBloc extends Bloc<AddEditEvent, AddEditState> {
     }
   }
 
-  Future<void> _addEmployeeDetailEvent(
-      AddEmployeeDetailEvent event, Emitter<AddEditState> emit) async {
+  Future<void> _addEmployeeDetailEvent(AddEmployeeDetailEvent event, Emitter<AddEditState> emit) async {
     int? empId = await _insertEmployee(event.employeeModel);
     if (empId != null) {
       emit(AddEditSuccess());
@@ -71,8 +70,7 @@ class AddEditBloc extends Bloc<AddEditEvent, AddEditState> {
     }
   }
 
-  void _editEmployeeDetailEvent(
-      EditEmployeeDetailEvent event, Emitter<AddEditState> emit) async {
+  void _editEmployeeDetailEvent(EditEmployeeDetailEvent event, Emitter<AddEditState> emit) async {
     int? empId = await _updateEmployee(event.employeeModel);
     if (empId != null) {
       emit(AddEditSuccess());

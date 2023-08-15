@@ -43,9 +43,9 @@ class CustomDatePickerMainModalWidget extends StatelessWidget {
                       "No Date",
                       style: TextStyle(color: AppColors.xGreyTextShade),
                     )
-                  : DateTime.now().add(Duration(hours: 3)).isAfter(selectedDate)
-                      ? Text("Today")
-                      : Text(HelperUtil.formatDate_dMMMy(selectedDate)),
+                  : HelperUtil.isNotToday(selectedDate)
+                      ? Text(HelperUtil.formatDate_dMMMy(selectedDate))
+                      : Text("Today"),
             ),
           ],
         ),
@@ -80,6 +80,7 @@ void _showDialogPopup(BuildContext context, DateCubit calendarCubit, bool isEndD
               calendarCubit.updateDate(value);
             },
             isEndDate: isEndDateWidget,
+            endDateOrginalValue: selectedDate,
           ),
         ),
       );

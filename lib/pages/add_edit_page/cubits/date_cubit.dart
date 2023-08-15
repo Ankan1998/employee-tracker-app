@@ -10,6 +10,10 @@ class StartDateCubit extends Cubit<DateTime> implements DateCubit {
   void updateDate(DateTime dateTime) {
     emit(dateTime);
   }
+
+  void resetCubit() {
+    emit(DateTime.now());
+  }
 }
 
 class EndDateCubit extends Cubit<DateTime> implements DateCubit {
@@ -17,5 +21,9 @@ class EndDateCubit extends Cubit<DateTime> implements DateCubit {
 
   void updateDate(DateTime dateTime) {
     emit(dateTime);
+  }
+
+  void resetCubit() {
+    emit(DateTime(1980));
   }
 }

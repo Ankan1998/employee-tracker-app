@@ -6,4 +6,8 @@ class BottomModalOptionCubit extends Cubit<String> {
   void updateOption(String option) {
     emit(option);
   }
+
+  void resetCubit() {
+    emit('Select Role');
+  }
 }

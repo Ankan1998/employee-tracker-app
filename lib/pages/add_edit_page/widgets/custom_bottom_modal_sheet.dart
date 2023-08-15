@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomDropdownWidget extends StatefulWidget {
   final VoidCallback onPressedx;
+  // final BottomModalOptionCubit bottomModalOptionCubit;
 
   const CustomDropdownWidget({super.key, required this.onPressedx});
   @override
@@ -41,9 +42,7 @@ class _CustomDropdownWidgetState extends State<CustomDropdownWidget> {
                         textAlign: TextAlign.center,
                       ),
                       onTap: () {
-                        context
-                            .read<BottomModalOptionCubit>()
-                            .updateOption(role);
+                        context.read<BottomModalOptionCubit>().updateOption(role);
                         Navigator.pop(context);
                       },
                     ),
@@ -60,8 +59,7 @@ class _CustomDropdownWidgetState extends State<CustomDropdownWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BottomModalOptionCubit, String>(
-        builder: (context, selectedOption) {
+    return BlocBuilder<BottomModalOptionCubit, String>(builder: (context, selectedOption) {
       return GestureDetector(
         onTap: () {
           widget.onPressedx();

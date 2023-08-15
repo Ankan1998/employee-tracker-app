@@ -39,6 +39,20 @@ class HelperUtil {
     return DateTime.now();
   }
 
+  static bool isNotToday(DateTime selectedDate) {
+    final now = DateTime.now();
+    bool isNotToday = selectedDate.year != now.year || selectedDate.month != now.month || selectedDate.day != now.day;
+    return isNotToday;
+  }
+
+  static int isPrevEmployee(DateTime endDate) {
+    if (endDate == DateTime(1980) || endDate.isAfter(DateTime.now())) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
+
   static MaterialColor createMaterialColor(Color color) {
     List<Color> shades = [
       color,
