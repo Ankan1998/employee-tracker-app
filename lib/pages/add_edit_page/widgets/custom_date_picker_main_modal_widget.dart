@@ -54,8 +54,7 @@ class CustomDatePickerMainModalWidget extends StatelessWidget {
   }
 }
 
-void _showDialogPopup(BuildContext context, DateCubit calendarCubit,
-    bool isEndDateWidget, DateTime selectedDate) {
+void _showDialogPopup(BuildContext context, DateCubit calendarCubit, bool isEndDateWidget, DateTime selectedDate) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -67,17 +66,14 @@ void _showDialogPopup(BuildContext context, DateCubit calendarCubit,
         insetPadding: EdgeInsets.zero,
         child: Container(
           width: MediaQuery.of(context).size.width * 0.90,
-          height: isEndDateWidget
-              ? MediaQuery.of(context).size.height * 0.6
-              : MediaQuery.of(context).size.height * 0.65,
+          height: isEndDateWidget ? MediaQuery.of(context).size.height * 0.6 : MediaQuery.of(context).size.height * 0.675,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             color: Colors.white,
           ),
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: CustomCalendarDatePicker(
-            initialDate:
-                selectedDate == DateTime(1980) ? DateTime.now() : selectedDate,
+            initialDate: selectedDate == DateTime(1980) ? DateTime.now() : selectedDate,
             firstDate: DateTime(1980),
             lastDate: DateTime(2090),
             onDateChanged: (DateTime value) {
