@@ -267,72 +267,74 @@ class _CustomCalendarDatePickerState extends State<CustomCalendarDatePicker> {
     assert(debugCheckHasMaterial(context));
     assert(debugCheckHasMaterialLocalizations(context));
     assert(debugCheckHasDirectionality(context));
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        widget.isEndDate
-            ? EndDateHeaderWidget(onPressedToday: () {
-                setState(() {
-                  _selectedDate = DateTime.now();
-                });
-              }, onPressedNoDate: () {
-                setState(() {
-                  _selectedDate = DateTime(1980);
-                });
-              })
-            : StartDateHeder(
-                onPressedToday: () {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          widget.isEndDate
+              ? EndDateHeaderWidget(onPressedToday: () {
                   setState(() {
                     _selectedDate = DateTime.now();
                   });
-                },
-                onPressedNextMonday: () {
+                }, onPressedNoDate: () {
                   setState(() {
-                    _selectedDate = HelperUtil.getNextWeekday(_selectedDate, DateTime.monday);
+                    _selectedDate = DateTime(1980);
                   });
-                },
-                onPressedNextTuseday: () {
-                  setState(() {
-                    _selectedDate = HelperUtil.getNextWeekday(_selectedDate, DateTime.tuesday);
-                  });
-                },
-                onPressedAfterWeek: () {
-                  setState(() {
-                    _selectedDate = _selectedDate.add(const Duration(days: 7));
-                  });
-                },
-              ),
-        SizedBox(
-          height: _subHeaderHeight + _maxDayPickerHeight,
-          child: _buildPicker(),
-        ),
-        const Divider(
-          color: AppColors.xGrey,
-          thickness: 2,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
-          child: SaveCancelBottombarWidget(
-            firstGroupText: HelperUtil.formatDate_dMMMy(_selectedDate),
-            onPressedCancel: () {
-              setState(() {
-                if (widget.isEndDate && widget.endDateOrginalValue == DateTime(1980)) {
-                  widget.onDateChanged(DateTime(1980));
-                } else {
-                  widget.onDateChanged(_persistedDate);
-                  _selectedDate = _persistedDate;
-                }
-              });
-              Navigator.of(context).pop();
-            },
-            onPressedSave: () {
-              widget.onDateChanged(_selectedDate);
-              Navigator.of(context).pop();
-            },
-            isCalendarText: true,
+                })
+              : StartDateHeder(
+                  onPressedToday: () {
+                    setState(() {
+                      _selectedDate = DateTime.now();
+                    });
+                  },
+                  onPressedNextMonday: () {
+                    setState(() {
+                      _selectedDate = HelperUtil.getNextWeekday(_selectedDate, DateTime.monday);
+                    });
+                  },
+                  onPressedNextTuseday: () {
+                    setState(() {
+                      _selectedDate = HelperUtil.getNextWeekday(_selectedDate, DateTime.tuesday);
+                    });
+                  },
+                  onPressedAfterWeek: () {
+                    setState(() {
+                      _selectedDate = _selectedDate.add(const Duration(days: 7));
+                    });
+                  },
+                ),
+          SizedBox(
+            height: _subHeaderHeight + _maxDayPickerHeight,
+            child: _buildPicker(),
           ),
-        )
-      ],
+          const Divider(
+            color: AppColors.xGrey,
+            thickness: 2,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+            child: SaveCancelBottombarWidget(
+              firstGroupText: HelperUtil.formatDate_dMMMy(_selectedDate),
+              onPressedCancel: () {
+                setState(() {
+                  if (widget.isEndDate && widget.endDateOrginalValue == DateTime(1980)) {
+                    widget.onDateChanged(DateTime(1980));
+                  } else {
+                    widget.onDateChanged(_persistedDate);
+                    _selectedDate = _persistedDate;
+                  }
+                });
+                Navigator.of(context).pop();
+              },
+              onPressedSave: () {
+                widget.onDateChanged(_selectedDate);
+                Navigator.of(context).pop();
+              },
+              isCalendarText: true,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

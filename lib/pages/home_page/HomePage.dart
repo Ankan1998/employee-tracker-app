@@ -25,168 +25,170 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Employee List'),
-        elevation: 0,
-      ),
-      backgroundColor: AppColors.xGreyBackground,
-      body: BlocBuilder<HomeBloc, HomeState>(
-        builder: (context, state) {
-          if (state is HomeLoading) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Loading, please wait...',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: AppColors.xGrey,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Employee List'),
+          elevation: 0,
+        ),
+        backgroundColor: AppColors.xGreyBackground,
+        body: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            if (state is HomeLoading) {
+              return const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
                     ),
-                  ),
-                ],
-              ),
-            );
-          } else if (state is HomeFailure) {
-            return const Center(
-              child: Text(
-                'Something Went Wrong!',
-                style: TextStyle(fontSize: 16, color: AppColors.xGreyTextShade),
-              ),
-            );
-          } else if (state is HomeSuccess) {
-            return BlocListener<DeleteBloc, DeleteState>(
-              bloc: context.read<DeleteBloc>(),
-              listener: (context, state) {
-                const snackBar = SnackBar(
-                  content: Text('Employee data has been Deleted!'),
-                  duration: Duration(seconds: 1),
-                );
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              },
-              child: ListView(
+                    SizedBox(height: 16),
+                    Text(
+                      'Loading, please wait...',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: AppColors.xGrey,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else if (state is HomeFailure) {
+              return const Center(
+                child: Text(
+                  'Something Went Wrong!',
+                  style: TextStyle(fontSize: 16, color: AppColors.xGreyTextShade),
+                ),
+              );
+            } else if (state is HomeSuccess) {
+              return BlocListener<DeleteBloc, DeleteState>(
+                bloc: context.read<DeleteBloc>(),
+                listener: (context, state) {
+                  const snackBar = SnackBar(
+                    content: Text('Employee data has been Deleted!'),
+                    duration: Duration(seconds: 1),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                },
+                child: ListView(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: GroupListView(
+                        sectionsCount: 2,
+                        countOfItemInSection: (int section) {
+                          return state.empModelList.where((e) => e.isPreviousEmp == section).length;
+                        },
+                        itemBuilder: (BuildContext context, IndexPath index) {
+                          EmployeeModel employee = state.empModelList.where((e) => e.isPreviousEmp == index.section).toList()[index.index];
+                          return GestureDetector(
+                            child: Dismissible(
+                              key: UniqueKey(),
+                              direction: DismissDirection.endToStart,
+                              onDismissed: (direction) {
+                                context.read<DeleteBloc>().add(DeleteRecordEvent(employee.empId));
+                              },
+                              background: Container(
+                                alignment: Alignment.centerRight,
+                                color: Colors.red,
+                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+                                child: const Icon(
+                                  Icons.delete_forever_outlined,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  CustomListTile(
+                                    Title: employee.empName,
+                                    Position: employee.empDesignation,
+                                    startDate: HelperUtil.formatDate_dMMMy(employee.startDate),
+                                    endDate: HelperUtil.formatDate_dMMMy(employee.endDate),
+                                    isPrev: employee.isPreviousEmp,
+                                  ),
+                                  const Divider(height: 1)
+                                ],
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AddEditPage(
+                                    addEditArgumentModel: AddEditArgumentModel(
+                                        empId: employee.empId,
+                                        employeeName: employee.empName,
+                                        employeeDesignation: employee.empDesignation,
+                                        employeeStartDate: employee.startDate,
+                                        employeeEndDate: employee.endDate),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        groupHeaderBuilder: (BuildContext context, int section) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
+                            child: Text(
+                              section == 0 ? 'Current employees' : 'Previous employees',
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.xBlue),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    Container(
+                      color: AppColors.xGreyBackground, // Adjust the color as needed
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      child: const Text(
+                        "Swipe left to delete",
+                        style: TextStyle(color: AppColors.xGreyTextShade),
+                      ), // Replace with your sticky widget
+                    ),
+                  ],
+                ),
+              );
+            }
+            return Center(
+              child: Column(
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.8,
-                    child: GroupListView(
-                      sectionsCount: 2,
-                      countOfItemInSection: (int section) {
-                        return state.empModelList.where((e) => e.isPreviousEmp == section).length;
-                      },
-                      itemBuilder: (BuildContext context, IndexPath index) {
-                        EmployeeModel employee = state.empModelList.where((e) => e.isPreviousEmp == index.section).toList()[index.index];
-                        return GestureDetector(
-                          child: Dismissible(
-                            key: UniqueKey(),
-                            direction: DismissDirection.endToStart,
-                            onDismissed: (direction) {
-                              context.read<DeleteBloc>().add(DeleteRecordEvent(employee.empId));
-                            },
-                            background: Container(
-                              alignment: Alignment.centerRight,
-                              color: Colors.red,
-                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-                              child: const Icon(
-                                Icons.delete_forever_outlined,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                CustomListTile(
-                                  Title: employee.empName,
-                                  Position: employee.empDesignation,
-                                  startDate: HelperUtil.formatDate_dMMMy(employee.startDate),
-                                  endDate: HelperUtil.formatDate_dMMMy(employee.endDate),
-                                  isPrev: employee.isPreviousEmp,
-                                ),
-                                const Divider(height: 1)
-                              ],
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddEditPage(
-                                  addEditArgumentModel: AddEditArgumentModel(
-                                      empId: employee.empId,
-                                      employeeName: employee.empName,
-                                      employeeDesignation: employee.empDesignation,
-                                      employeeStartDate: employee.startDate,
-                                      employeeEndDate: employee.endDate),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      groupHeaderBuilder: (BuildContext context, int section) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
-                          child: Text(
-                            section == 0 ? 'Current employees' : 'Previous employees',
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.xBlue),
-                          ),
-                        );
-                      },
-                    ),
+                    height: MediaQuery.of(context).size.height * 0.2,
                   ),
-                  Container(
-                    color: AppColors.xGreyBackground, // Adjust the color as needed
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    child: const Text(
-                      "Swipe left to delete",
-                      style: TextStyle(color: AppColors.xGreyTextShade),
-                    ), // Replace with your sticky widget
+                  SvgPicture.asset(
+                    'assets/no_record.svg',
+                  ),
+                  const Text(
+                    "No employee records found",
+                    style: TextStyle(fontSize: 18),
                   ),
                 ],
               ),
             );
-          }
-          return Center(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.2,
-                ),
-                SvgPicture.asset(
-                  'assets/no_record.svg',
-                ),
-                const Text(
-                  "No employee records found",
-                  style: TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AddEditPage(),
-            ),
-          );
-        },
-        backgroundColor: AppColors.xBlue,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          },
         ),
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddEditPage(),
+              ),
+            );
+          },
+          backgroundColor: AppColors.xBlue,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
