@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CustomDropdownWidget extends StatefulWidget {
   final VoidCallback onPressedx;
-  // final BottomModalOptionCubit bottomModalOptionCubit;
 
   const CustomDropdownWidget({super.key, required this.onPressedx});
   @override
