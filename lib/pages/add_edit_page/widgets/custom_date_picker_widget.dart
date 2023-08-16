@@ -1,7 +1,3 @@
-// Copyright 2014 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
@@ -29,7 +25,6 @@ const double _yearPickerRowHeight = 52.0;
 const double _yearPickerRowSpacing = 8.0;
 
 const double _subHeaderHeight = 52.0;
-const double _monthNavButtonsWidth = 108.0;
 
 /// Displays a grid of days for a given month and allows the user to select a
 /// date.
@@ -206,24 +201,6 @@ class _CustomCalendarDatePickerState extends State<CustomCalendarDatePicker> {
     }
   }
 
-  void _handleModeChanged(DatePickerMode mode) {
-    _vibrate();
-    setState(() {
-      _mode = mode;
-      if (_mode == DatePickerMode.day) {
-        SemanticsService.announce(
-          _localizations.formatMonthYear(_selectedDate),
-          _textDirection,
-        );
-      } else {
-        SemanticsService.announce(
-          _localizations.formatYear(_selectedDate),
-          _textDirection,
-        );
-      }
-    });
-  }
-
   void _handleMonthChanged(DateTime date) {
     setState(() {
       if (_currentDisplayedMonthDate.year != date.year || _currentDisplayedMonthDate.month != date.month) {
@@ -359,116 +336,6 @@ class _CustomCalendarDatePickerState extends State<CustomCalendarDatePicker> {
     );
   }
 }
-
-// 415A
-/// A button that used to toggle the [DatePickerMode] for a date picker.
-///
-/// This appears above the calendar grid and allows the user to toggle the
-/// [DatePickerMode] to display either the calendar view or the year list.
-// class _DatePickerModeToggleButton extends StatefulWidget {
-//   const _DatePickerModeToggleButton({
-//     required this.mode,
-//     required this.title,
-//     required this.onTitlePressed,
-//   });
-//
-//   /// The current display of the calendar picker.
-//   final DatePickerMode mode;
-//
-//   /// The text that displays the current month/year being viewed.
-//   final String title;
-//
-//   /// The callback when the title is pressed.
-//   final VoidCallback onTitlePressed;
-//
-//   @override
-//   _DatePickerModeToggleButtonState createState() => _DatePickerModeToggleButtonState();
-// }
-//
-// class _DatePickerModeToggleButtonState extends State<_DatePickerModeToggleButton> with SingleTickerProviderStateMixin {
-//   late AnimationController _controller;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _controller = AnimationController(
-//       value: widget.mode == DatePickerMode.year ? 0.5 : 0,
-//       upperBound: 0.5,
-//       duration: const Duration(milliseconds: 200),
-//       vsync: this,
-//     );
-//   }
-//
-//   @override
-//   void didUpdateWidget(_DatePickerModeToggleButton oldWidget) {
-//     super.didUpdateWidget(oldWidget);
-//     if (oldWidget.mode == widget.mode) {
-//       return;
-//     }
-//
-//     if (widget.mode == DatePickerMode.year) {
-//       _controller.forward();
-//     } else {
-//       _controller.reverse();
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-//     final TextTheme textTheme = Theme.of(context).textTheme;
-//     final Color controlColor = colorScheme.onSurface.withOpacity(0.60);
-//
-//     return Container(
-//       padding: const EdgeInsetsDirectional.only(start: 16, end: 4),
-//       height: _subHeaderHeight,
-//       child: Row(
-//         children: <Widget>[
-//           Flexible(
-//             child: SizedBox(
-//               height: _subHeaderHeight,
-//               child: InkWell(
-//                 onTap: widget.onTitlePressed,
-//                 child: Padding(
-//                   padding: const EdgeInsets.symmetric(horizontal: 8),
-//                   child: Row(
-//                     children: <Widget>[
-//                       Flexible(
-//                         child: Text(
-//                           widget.title,
-//                           overflow: TextOverflow.ellipsis,
-//                           style: textTheme.titleSmall?.copyWith(
-//                             color: controlColor,
-//                           ),
-//                         ),
-//                       ),
-//                       RotationTransition(
-//                         turns: _controller,
-//                         child: Icon(
-//                           Icons.arrow_drop_down,
-//                           color: controlColor,
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ),
-//           if (widget.mode == DatePickerMode.day)
-//           // Give space for the prev/next month buttons that are underneath this row
-//             const SizedBox(width: _monthNavButtonsWidth),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   @override
-//   void dispose() {
-//     _controller.dispose();
-//     super.dispose();
-//   }
-// }
 
 class _MonthPicker extends StatefulWidget {
   /// Creates a month picker.

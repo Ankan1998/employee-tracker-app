@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_assignment_app/model/argument_model/add_edit_argument_model.dart';
 import 'package:flutter_assignment_app/pages/add_edit_page/add_edit_page.dart';
@@ -32,10 +31,7 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
       ),
       backgroundColor: AppColors.xGreyBackground,
-      body: BlocConsumer<HomeBloc, HomeState>(
-        listener: (context, state) {
-          // TODO: implement listener
-        },
+      body: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           if (state is HomeLoading) {
             return const Center(
@@ -65,10 +61,11 @@ class _HomePageState extends State<HomePage> {
             );
           } else if (state is HomeSuccess) {
             return BlocListener<DeleteBloc, DeleteState>(
+              bloc: context.read<DeleteBloc>(),
               listener: (context, state) {
                 const snackBar = SnackBar(
                   content: Text('Employee data has been Deleted!'),
-                  duration: Duration(seconds: 2),
+                  duration: Duration(seconds: 1),
                 );
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               },
@@ -79,28 +76,21 @@ class _HomePageState extends State<HomePage> {
                     child: GroupListView(
                       sectionsCount: 2,
                       countOfItemInSection: (int section) {
-                        return state.empModelList
-                            .where((e) => e.isPreviousEmp == section)
-                            .length;
+                        return state.empModelList.where((e) => e.isPreviousEmp == section).length;
                       },
                       itemBuilder: (BuildContext context, IndexPath index) {
-                        EmployeeModel employee = state.empModelList
-                            .where((e) => e.isPreviousEmp == index.section)
-                            .toList()[index.index];
+                        EmployeeModel employee = state.empModelList.where((e) => e.isPreviousEmp == index.section).toList()[index.index];
                         return GestureDetector(
                           child: Dismissible(
                             key: UniqueKey(),
                             direction: DismissDirection.endToStart,
                             onDismissed: (direction) {
-                              context
-                                  .read<DeleteBloc>()
-                                  .add(DeleteRecordEvent(employee.empId));
+                              context.read<DeleteBloc>().add(DeleteRecordEvent(employee.empId));
                             },
                             background: Container(
                               alignment: Alignment.centerRight,
                               color: Colors.red,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 24),
+                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
                               child: const Icon(
                                 Icons.delete_forever_outlined,
                                 color: Colors.white,
@@ -112,10 +102,8 @@ class _HomePageState extends State<HomePage> {
                                 CustomListTile(
                                   Title: employee.empName,
                                   Position: employee.empDesignation,
-                                  startDate: HelperUtil.formatDate_dMMMy(
-                                      employee.startDate),
-                                  endDate: HelperUtil.formatDate_dMMMy(
-                                      employee.endDate),
+                                  startDate: HelperUtil.formatDate_dMMMy(employee.startDate),
+                                  endDate: HelperUtil.formatDate_dMMMy(employee.endDate),
                                   isPrev: employee.isPreviousEmp,
                                 ),
                                 const Divider(height: 1)
@@ -130,8 +118,7 @@ class _HomePageState extends State<HomePage> {
                                   addEditArgumentModel: AddEditArgumentModel(
                                       empId: employee.empId,
                                       employeeName: employee.empName,
-                                      employeeDesignation:
-                                          employee.empDesignation,
+                                      employeeDesignation: employee.empDesignation,
                                       employeeStartDate: employee.startDate,
                                       employeeEndDate: employee.endDate),
                                 ),
@@ -142,26 +129,18 @@ class _HomePageState extends State<HomePage> {
                       },
                       groupHeaderBuilder: (BuildContext context, int section) {
                         return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 18),
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
                           child: Text(
-                            section == 0
-                                ? 'Current employees'
-                                : 'Previous employees',
-                            style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.xBlue),
+                            section == 0 ? 'Current employees' : 'Previous employees',
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.xBlue),
                           ),
                         );
                       },
                     ),
                   ),
                   Container(
-                    color:
-                        AppColors.xGreyBackground, // Adjust the color as needed
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
+                    color: AppColors.xGreyBackground, // Adjust the color as needed
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     child: const Text(
                       "Swipe left to delete",
                       style: TextStyle(color: AppColors.xGreyTextShade),

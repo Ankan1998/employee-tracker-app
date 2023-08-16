@@ -13,12 +13,10 @@ class DeleteBloc extends Bloc<DeleteEvent, DeleteState> {
     on<DeleteRecordEvent>(_deleteRecordEvent);
   }
 
-  Future<void> _deleteRecordEvent(
-      DeleteRecordEvent event, Emitter<DeleteState> emit) async {
+  Future<void> _deleteRecordEvent(DeleteRecordEvent event, Emitter<DeleteState> emit) async {
     try {
       DatabaseHelper helper = DatabaseHelper.instance;
-      int data = await helper.delete(event.empId);
-      print('Employye with id $data got deleted');
+      await helper.delete(event.empId);
       emit(DeleteSuccess());
     } catch (e) {
       print("Something Went Wrong");
