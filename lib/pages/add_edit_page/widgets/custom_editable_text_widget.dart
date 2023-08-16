@@ -6,8 +6,7 @@ class CustomTextEditableWidget extends StatelessWidget {
   final FocusNode focusNode;
   final TextEditingController controller;
 
-  const CustomTextEditableWidget(
-      {super.key, required this.focusNode, required this.controller});
+  const CustomTextEditableWidget({super.key, required this.focusNode, required this.controller});
   @override
   Widget build(BuildContext context) {
     return Container(

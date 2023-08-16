@@ -88,60 +88,68 @@ class _AddEditPageState extends State<AddEditPage> {
                       : const SizedBox()
                 ],
               ),
-              body: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      height: 12.0,
-                    ),
-                    CustomTextEditableWidget(
-                      focusNode: _focusNode,
-                      controller: _textEditingController,
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    CustomDropdownWidget(
-                      onPressedx: _handleTap,
-                    ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    Row(
-                      children: [
-                        BlocBuilder<StartDateCubit, DateTime>(builder: (context, selectedDate) {
-                          final startDateCubit = context.read<StartDateCubit>();
-                          return Expanded(
-                              child: CustomDatePickerMainModalWidget(
-                            calendarBloc: startDateCubit,
-                            selectedDate: selectedDate,
-                            isEndDateWidget: false,
-                          ));
-                        }),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Icon(
-                            Icons.arrow_right_alt_outlined,
-                            color: AppColors.xBlue,
+              body: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                    child: Column(children: [
+                      const SizedBox(
+                        height: 12.0,
+                      ),
+                      CustomTextEditableWidget(
+                        focusNode: _focusNode,
+                        controller: _textEditingController,
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      CustomDropdownWidget(
+                        onPressedx: _handleTap,
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      Row(
+                        children: [
+                          BlocBuilder<StartDateCubit, DateTime>(builder: (context, selectedDate) {
+                            final startDateCubit = context.read<StartDateCubit>();
+                            return Expanded(
+                                child: CustomDatePickerMainModalWidget(
+                              calendarBloc: startDateCubit,
+                              selectedDate: selectedDate,
+                              isEndDateWidget: false,
+                            ));
+                          }),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Icon(
+                              Icons.arrow_right_alt_outlined,
+                              color: AppColors.xBlue,
+                            ),
                           ),
-                        ),
-                        BlocBuilder<EndDateCubit, DateTime>(builder: (context, selectedDate) {
-                          final endDateCubit = context.read<EndDateCubit>();
-                          return Expanded(
-                              child: CustomDatePickerMainModalWidget(
-                            calendarBloc: endDateCubit,
-                            selectedDate: selectedDate,
-                            isEndDateWidget: true,
-                          ));
-                        })
-                      ],
-                    ),
-                    const Expanded(
-                      child: SizedBox(),
-                    ),
-                    SaveCancelBottombarWidget(
+                          BlocBuilder<EndDateCubit, DateTime>(builder: (context, selectedDate) {
+                            final endDateCubit = context.read<EndDateCubit>();
+                            return Expanded(
+                                child: CustomDatePickerMainModalWidget(
+                              calendarBloc: endDateCubit,
+                              selectedDate: selectedDate,
+                              isEndDateWidget: true,
+                            ));
+                          })
+                        ],
+                      ),
+                    ]),
+                  ),
+                  const Expanded(
+                    child: SizedBox(),
+                  ),
+                  Divider(
+                    height: 1,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                    child: SaveCancelBottombarWidget(
                       onPressedCancel: () {
                         Navigator.of(context).pop();
                         context.read<StartDateCubit>().resetCubit();
@@ -164,9 +172,9 @@ class _AddEditPageState extends State<AddEditPage> {
                         context.read<EndDateCubit>().resetCubit();
                         context.read<BottomModalOptionCubit>().resetCubit();
                       },
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               )),
         );
       },

@@ -47,8 +47,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  Future<void> _homeGetEmployeeEvent(
-      HomeGetEmployeeEvent event, Emitter<HomeState> emit) async {
+  Future<void> _homeGetEmployeeEvent(HomeGetEmployeeEvent event, Emitter<HomeState> emit) async {
+    emit(HomeLoading());
     List<EmployeeModel>? empModelList = await _getAllEmployees();
     if (empModelList != null) {
       if (empModelList.isEmpty) {
