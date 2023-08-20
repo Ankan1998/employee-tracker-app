@@ -29,8 +29,8 @@ A Flutter application developed to track employee records using the `sqflite` da
 
 Steps to run
    ```sh
-   git clone https://github.com/your-username/employee-record-tracker.git
-   cd employee-record-tracker
+   git clone https://github.com/Ankan1998/employee-tracker-app
+   cd employee-tracker-app
    flutter pub get
    flutter run
 
